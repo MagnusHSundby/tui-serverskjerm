@@ -1,0 +1,73 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "prometheus"
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "elev"
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    metrics_path: /pve
+    params:
+      module: ["elev"]
+      cluster: ["1"]
+      node: ["1"]
+    static_configs:
+      - targets:
+          - "172.31.0.10"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: pve-exporter:9221
+
+  - job_name: "elev2"
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    metrics_path: /pve
+    params:
+      module: ["elev2"]
+      cluster: ["1"]
+      node: ["1"]
+    static_configs:
+      - targets:
+          - "172.31.1.11"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: pve-exporter:9221
+
+  - job_name: "master"
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    metrics_path: /pve
+    params:
+      module: ["master"]
+      cluster: ["1"]
+      node: ["1"]
+    static_configs:
+      - targets:
+          - "172.31.0.9"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: pve-exporter:9221
+
+  - job_name: "unifi"
+    scrape_interval: 30s
+    scrape_timeout: 25s
+    static_configs:
+      - targets: ["unifi-poller:9130"]

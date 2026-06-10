@@ -1,0 +1,14 @@
+elev:
+  user: prometheus@pve
+  password: Prometheus1!
+  verify_ssl: false
+
+elev2:
+  user: prometheus3@pve
+  password: Prometheus3!
+  verify_ssl: false
+
+master:
+  user: prometheus2@pve
+  password: Prometheus2!
+  verify_ssl: false

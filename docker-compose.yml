@@ -1,0 +1,51 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=30d"
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  pve-exporter:
+    image: prompve/prometheus-pve-exporter
+    container_name: pve-exporter
+    ports:
+      - "9221:9221"
+    volumes:
+      - ./pve-exporter/pve-exporter.yml:/etc/prometheus/pve.yml
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+  unifi-poller:
+    image: ghcr.io/unpoller/unpoller:latest
+    container_name: unifi-poller
+    ports:
+      - "9130:9130"
+    environment:
+      - UP_UNIFI_DEFAULT_URL=${UNIFI_URL:-https://192.168.1.1}
+      - UP_UNIFI_DEFAULT_USER=${UNIFI_USER:-unifipoller}
+      - UP_UNIFI_DEFAULT_PASS=${UNIFI_PASS:-changeme}
+      - UP_UNIFI_DEFAULT_SAVE_SITES=true
+      - UP_UNIFI_DEFAULT_SAVE_DPI=false
+      - UP_UNIFI_DEFAULT_VERIFY_SSL=false
+      - UP_PROMETHEUS_DISABLE=false
+      - UP_PROMETHEUS_HTTP_LISTEN=0.0.0.0:9130
+    restart: unless-stopped
+    networks:
+      - monitoring
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  prometheus_data:
