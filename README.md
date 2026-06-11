@@ -24,16 +24,16 @@ aggregerer. TUI-en spør Prometheus' HTTP-API og rendrer resultatet i terminalen
 ```mermaid
 flowchart LR
     subgraph sources["Overvåkede systemer"]
-        elev["Proxmox: elev<br/>172.31.0.10"]
-        elev2["Proxmox: elev2<br/>172.31.1.11"]
-        master["Proxmox: master<br/>172.31.0.9"]
-        unifi["UniFi Controller<br/>192.168.1.1"]
+        elev["Proxmox: elev<br/>"]
+        elev2["Proxmox: elev2<br/>"]
+        master["Proxmox: master<br/>"]
+        unifi["UniFi Controller<br/>"]
     end
 
     subgraph stack["Docker Compose-stack — nett: monitoring"]
-        pve["pve-exporter<br/>:9221"]
-        poller["unifi-poller<br/>:9130"]
-        prom["Prometheus<br/>:9090 · 30d retention"]
+        pve["pve-exporter<br/>:"]
+        poller["unifi-poller<br/>:"]
+        prom["Prometheus<br/>: · 30d retention"]
     end
 
     tui["TUI — Go / Bubble Tea v2<br/>PrometheusClient"]
@@ -43,7 +43,7 @@ flowchart LR
     master -->|Proxmox API| pve
     unifi -->|UniFi API| poller
 
-    pve -->|scrape /pve| prom
+    pve -->|scrape | prom
     poller -->|scrape| prom
 
     prom -->|PromQL HTTP-query| tui
